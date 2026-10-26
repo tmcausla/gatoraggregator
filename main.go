@@ -1,8 +1,11 @@
 package main
 import (
 	"fmt"
-	"os"	
+	"os"
+	"database/sql"
 	"github.com/tmcausla/gatoraggregator/internal/config"
+	"github.com/tmcausla/gatoraggregator/internal/database"
+	_ "github.com/lib/pq"
 )
 
 func main() {
@@ -27,11 +30,23 @@ func main() {
 	mainState := state{
 		cfg: &mainConfig,
 	}
+	db, err := sql.Open("postgres", mainState.cfg.DbURL)
+	defer db.Close()
+
+	if err != nil {
+		fmt.Printf("error opening database from DbURL: %v", err)
+		os.Exit(1)
+	}
+	mainState.db = database.New(db)
 
 	cmdList := commands{
 		cmds: map[string]func(*state, command) error{},
 	}
+
 	cmdList.register("login", handlerLogin)
+	cmdList.register("register", handlerRegister)
+	cmdList.register("reset", handlerReset)
+	cmdList.register("users", handlerUsers)
 
 	userArgs := os.Args
 	if len(userArgs) < 2 {
@@ -51,6 +66,8 @@ func main() {
 		fmt.Printf("%v\n", err)
 		os.Exit(1)
 	}
+
+
 
 	/*fmt.Println("new config:") // USE FOR DEBUGGING
 	data, err = os.ReadFile(homeDir + "/.gatorconfig.json") // //////////////////////
