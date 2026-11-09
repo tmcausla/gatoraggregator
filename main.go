@@ -47,6 +47,11 @@ func main() {
 	cmdList.register("register", handlerRegister)
 	cmdList.register("reset", handlerReset)
 	cmdList.register("users", handlerUsers)
+	cmdList.register("agg", handlerAgg)
+	cmdList.register("addfeed", middlewareLoggedIn(handlerAddFeed))
+	cmdList.register("feeds", handlerFeeds)
+	cmdList.register("follow", middlewareLoggedIn(handlerFollow))
+	cmdList.register("following", middlewareLoggedIn(handlerFollowing))
 
 	userArgs := os.Args
 	if len(userArgs) < 2 {
