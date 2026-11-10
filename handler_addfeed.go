@@ -27,7 +27,7 @@ func handlerAddFeed(s *state, cmd command, user database.User) error {
 		return fmt.Errorf("error creating new feed: %w", err)
 	}
 
-	fmt.Printf("new feed record:\nid: %v\ncreated at: %v\nupdated at: %v\nname: %v\nurl: %v\nuser id: %v",
+	fmt.Printf("new feed record:\nid: %v\ncreated at: %v\nupdated at: %v\nname: %v\nurl: %v\nuser id: %v\n",
 		feed.ID, feed.CreatedAt, feed.UpdatedAt, feed.Name, feed.Url, feed.UserID)
 
 	_, err = s.db.CreateFeedFollow(context.Background(), database.CreateFeedFollowParams{
